@@ -33,6 +33,7 @@ buildscript {
         espresso_version = "3.3.0"
         hiltVersion = '2.31.2-alpha'
         hiltAndroidXVersion = '1.0.0-alpha03'
+        paging_version = "3.0.0-beta02"
     }
 
     dependencies {

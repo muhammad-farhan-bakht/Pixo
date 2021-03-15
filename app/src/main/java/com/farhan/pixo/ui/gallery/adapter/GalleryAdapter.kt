@@ -2,14 +2,14 @@ package com.farhan.pixo.ui.gallery.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.farhan.pixo.databinding.GalleryListViewBinding
 import com.farhan.pixo.model.Images
 
-class GalleryAdapter : ListAdapter<Images, ItemViewHolder>(GalleryAdapter) {
+class GalleryAdapter : PagingDataAdapter<Images, ItemViewHolder>(GalleryAdapter) {
     companion object : DiffUtil.ItemCallback<Images>() {
         override fun areItemsTheSame(oldItem: Images, newItem: Images): Boolean {
             return oldItem.id == newItem.id

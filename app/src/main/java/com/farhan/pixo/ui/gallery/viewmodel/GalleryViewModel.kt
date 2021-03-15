@@ -1,9 +1,7 @@
 package com.farhan.pixo.ui.gallery.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import androidx.paging.cachedIn
 import com.farhan.pixo.arch.mvi.IModel
 import com.farhan.pixo.ui.gallery.action.GalleryActions
 import com.farhan.pixo.ui.gallery.repository.GalleryRepository
@@ -25,6 +23,13 @@ class GalleryViewModel @Inject constructor(private val galleryRepository: Galler
     override val state: LiveData<GalleryState>
         get() = _state
 
+    private val currentQuery = MutableLiveData(DEFAULT_QUERY)
+
+    val images = currentQuery.switchMap { queryString ->
+        Timber.e("currentQuery.switchMap Calls")
+        galleryRepository.getImages2(queryString).cachedIn(viewModelScope)
+    }
+
     init {
         handlerAction()
     }
@@ -33,7 +38,9 @@ class GalleryViewModel @Inject constructor(private val galleryRepository: Galler
         viewModelScope.launch {
             actions.consumeAsFlow().collect { actions ->
                 when(actions){
-                    GalleryActions.GetImages -> loadImages()
+                    GalleryActions.GetImages -> {
+                        //loadImages()
+                    }
                     GalleryActions.NoInternet -> updateState(GalleryState.NoInternet)
                     is GalleryActions.OnClickImage -> updateState (GalleryState.OnClickImage(imageUrl = actions.imageUrl))
                 }
@@ -55,6 +62,15 @@ class GalleryViewModel @Inject constructor(private val galleryRepository: Galler
 
     private fun updateState(action: GalleryState) {
         _state.postValue(action)
+    }
+
+
+    fun searchPhotos(query: String) {
+        currentQuery.value = query
+    }
+
+    companion object {
+        private const val DEFAULT_QUERY = "nature"
     }
 
 }

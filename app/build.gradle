@@ -63,11 +63,13 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$arch_lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$arch_lifecycle_version"
 
+    // Paging 3
+    implementation "androidx.paging:paging-runtime:$paging_version"
+
     // Dagger Hilt
     implementation "com.google.dagger:hilt-android:$hiltVersion"
     kapt "com.google.dagger:hilt-compiler:$hiltVersion"
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hiltAndroidXVersion"
-
 
     // Fragment KTX
     implementation "androidx.fragment:fragment-ktx:$fragment_ktx_version"
@@ -92,4 +94,8 @@ dependencies {
     // Timber Logging
     implementation "com.jakewharton.timber:timber:$timber_version"
 
+}
+
+kapt {
+    correctErrorTypes true
 }
