@@ -14,7 +14,7 @@ interface PixabayApi {
     suspend fun getImages(
         @Query("key") key: String = "20674327-3911c1290f7b8097d85649f8d",
         @Query("image_type") imageType: String = "photo",
-        @Query("page") page: Int = 2,
-        @Query("per_page") perPage: Int = 30
+        @Query("page") page: Int = 1,
+        @Query("per_page") perPage: Int = 100
     ) : Image
 }

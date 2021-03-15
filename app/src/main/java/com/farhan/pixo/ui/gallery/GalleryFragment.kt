@@ -14,7 +14,6 @@ import com.farhan.pixo.ui.gallery.action.GalleryActions
 import com.farhan.pixo.ui.gallery.adapter.GalleryAdapter
 import com.farhan.pixo.ui.gallery.state.GalleryState
 import com.farhan.pixo.ui.gallery.viewmodel.GalleryViewModel
-import com.farhan.pixo.utils.SpaceItemDecorator
 import com.farhan.pixo.utils.toArrayList
 import com.farhan.pixo.utils.toast
 import com.farhan.pixo.utils.viewBinding
@@ -39,14 +38,15 @@ class GalleryFragment : Fragment(R.layout.gallery_fragment), IView<GalleryState>
 
     private fun initUi() {
         // initialize staggered grid layout manager and RecyclerView
-        /*val staggeredGridLayoutManager = StaggeredGridLayoutManager(2,  StaggeredGridLayoutManager.VERTICAL)
+        val staggeredGridLayoutManager = StaggeredGridLayoutManager(2,  StaggeredGridLayoutManager.VERTICAL)
         staggeredGridLayoutManager.apply {
             gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
-        }*/
+        }
         binding.rvGallery.apply {
+            setHasFixedSize(true)
             adapter = galleryAdapter
-           // binding.rvGallery.layoutManager = staggeredGridLayoutManager
-            addItemDecoration(SpaceItemDecorator())
+            binding.rvGallery.layoutManager = staggeredGridLayoutManager
+
         }
     }
 

@@ -6,15 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.gallery.GalleryFragment"
-    android:layout_marginVertical="8dp">
+    android:layout_margin="8dp">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_gallery"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
-        android:layout_marginHorizontal="8dp"
-        app:spanCount="2"/>
+        android:layout_height="match_parent" />
 
     <ProgressBar
         android:visibility="gone"

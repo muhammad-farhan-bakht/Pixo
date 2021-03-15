@@ -8,10 +8,12 @@
             type="com.farhan.pixo.model.Images" />
     </data>
 
-
     <com.google.android.material.card.MaterialCardView
-        android:layout_margin="6dp"
+        android:layout_margin="8dp"
         android:layout_width="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardCornerRadius="10dp"
         android:layout_height="wrap_content">
 
         <RelativeLayout
