@@ -14,7 +14,7 @@
         android:clickable="true"
         android:focusable="true"
         app:cardCornerRadius="10dp"
-        android:layout_height="wrap_content">
+        android:layout_height="200dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -22,8 +22,10 @@
 
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:contentDescription="@string/image"
+                android:adjustViewBounds="true"
+                android:scaleType="fitXY"
                 app:setImageUrl="@{image.imageUrl}"/>
 
         </RelativeLayout>

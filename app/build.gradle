@@ -93,7 +93,6 @@ dependencies {
 
     // Timber Logging
     implementation "com.jakewharton.timber:timber:$timber_version"
-
 }
 
 kapt {

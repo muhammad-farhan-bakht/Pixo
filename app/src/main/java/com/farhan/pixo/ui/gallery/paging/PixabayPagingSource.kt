@@ -26,7 +26,7 @@ class PixabayPagingSource(
             val images = response.imageList
             LoadResult.Page(
                     data = images,
-                    prevKey = null,
+                    prevKey = if (position == PIXABAY_STARTING_PAGE_INDEX) null else position - 1,
                     nextKey = if (images.isEmpty()) null else position + 1
             )
         } catch (exception: Exception) {

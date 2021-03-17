@@ -16,23 +16,23 @@ import javax.inject.Inject
 
 class GalleryRepository @Inject constructor(private val pixabayApi: PixabayApi) {
     suspend fun getImages(): Image {
-        return withContext(Dispatchers.IO){
-            pixabayApi.getImages(page = 1)
+        return withContext(Dispatchers.IO) {
+            pixabayApi.getImages()
         }
     }
 
     fun getImages2(query: String) =
-        Pager(
-            config = PagingConfig(
-                pageSize = 20,
-                maxSize = 100,
-                enablePlaceholders = false,
-            ),
-            pagingSourceFactory = { PixabayPagingSource(pixabayApi, query) }
-        ).liveData
+            Pager(
+                    config = PagingConfig(
+                            pageSize = 20,
+                            enablePlaceholders = false,
+                            prefetchDistance = 5
+                    ),
+                    pagingSourceFactory = { PixabayPagingSource(pixabayApi, query) }
+            ).liveData
 
     fun getImages3(query: String): Flow<PagingData<Images>> =
-        Pager(config = PagingConfig(pageSize = 20, prefetchDistance = 2),
-            pagingSourceFactory = { PixabayPagingSource(pixabayApi,query) }
-        ).flow
+            Pager(config = PagingConfig(pageSize = 20, prefetchDistance = 2),
+                    pagingSourceFactory = { PixabayPagingSource(pixabayApi, query) }
+            ).flow
 }

@@ -7,7 +7,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.farhan.pixo.R
 import com.farhan.pixo.arch.mvi.IView
 import com.farhan.pixo.databinding.GalleryFragmentBinding
@@ -39,7 +41,7 @@ class GalleryFragment : Fragment(R.layout.gallery_fragment), IView<GalleryState>
 
     private fun initUi() {
         // initialize staggered grid layout manager and RecyclerView
-        /*val staggeredGridLayoutManager = StaggeredGridLayoutManager(2,  StaggeredGridLayoutManager.VERTICAL)
+       /* val staggeredGridLayoutManager = StaggeredGridLayoutManager(2,  StaggeredGridLayoutManager.VERTICAL)
         staggeredGridLayoutManager.apply {
             gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
         }*/
@@ -48,16 +50,7 @@ class GalleryFragment : Fragment(R.layout.gallery_fragment), IView<GalleryState>
             setHasFixedSize(true)
             adapter = galleryAdapter
             //binding.rvGallery.layoutManager = staggeredGridLayoutManager
-
             binding.rvGallery.layoutManager = GridLayoutManager(requireContext(),2,GridLayoutManager.VERTICAL,false)
-
-            /*addOnScrollListener(object: RecyclerView.OnScrollListener(){
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    super.onScrollStateChanged(recyclerView, newState)
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE)
-                        recyclerView.invalidateItemDecorations()
-                }
-            })*/
         }
     }
 
