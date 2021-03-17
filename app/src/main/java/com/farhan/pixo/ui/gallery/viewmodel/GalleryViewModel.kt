@@ -8,6 +8,7 @@ import com.farhan.pixo.ui.gallery.repository.GalleryRepository
 import com.farhan.pixo.ui.gallery.state.GalleryState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
@@ -23,10 +24,9 @@ class GalleryViewModel @Inject constructor(private val galleryRepository: Galler
     override val state: LiveData<GalleryState>
         get() = _state
 
-    private val currentQuery = MutableLiveData(DEFAULT_QUERY)
+    private val currentQuery = MutableLiveData<String>()
 
     val images = currentQuery.switchMap { queryString ->
-        Timber.e("currentQuery.switchMap Calls")
         galleryRepository.getImages2(queryString).cachedIn(viewModelScope)
     }
 
@@ -38,8 +38,10 @@ class GalleryViewModel @Inject constructor(private val galleryRepository: Galler
         viewModelScope.launch {
             actions.consumeAsFlow().collect { actions ->
                 when(actions){
-                    GalleryActions.GetImages -> {
-                        //loadImages()
+                    is GalleryActions.GetImages -> {
+                        updateState(GalleryState.GetImages(isLoading = true))
+                        delay(1000)
+                        currentQuery.value = actions.query
                     }
                     GalleryActions.NoInternet -> updateState(GalleryState.NoInternet)
                     is GalleryActions.OnClickImage -> updateState (GalleryState.OnClickImage(imageUrl = actions.imageUrl))
@@ -62,15 +64,6 @@ class GalleryViewModel @Inject constructor(private val galleryRepository: Galler
 
     private fun updateState(action: GalleryState) {
         _state.postValue(action)
-    }
-
-
-    fun searchPhotos(query: String) {
-        currentQuery.value = query
-    }
-
-    companion object {
-        private const val DEFAULT_QUERY = "nature"
     }
 
 }
