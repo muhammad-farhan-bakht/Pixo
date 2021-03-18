@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
+import androidx.transition.ChangeBounds
 import androidx.transition.TransitionInflater
 import com.farhan.pixo.R
 import com.farhan.pixo.arch.mvi.IView
@@ -22,9 +23,14 @@ class PreviewFragment : Fragment(R.layout.preview_fragment), IView<PreviewState>
     private val binding by viewBinding(PreviewFragmentBinding::bind)
     private val args: PreviewFragmentArgs by navArgs()
 
+    // TODO: https://www.raywenderlich.com/8279305-navigation-component-for-android-part-3-transition-and-navigation
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+        //sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+        sharedElementEnterTransition = TransitionInflater.from(this.context).inflateTransition(R.transition.change_bounds)
+        sharedElementReturnTransition =  TransitionInflater.from(this.context).inflateTransition(R.transition.change_bounds)
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

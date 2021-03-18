@@ -43,7 +43,7 @@ class ItemViewHolder(private val binding: GalleryListViewBinding) : RecyclerView
         binding.executePendingBindings()
         binding.root.setOnClickListener {
             val extras = FragmentNavigatorExtras(
-                    binding.imgGalleryImage.toTransitionGroup()
+                   binding.imgGalleryImage.toTransitionGroup()
             )
             val direction = GalleryFragmentDirections.actionGalleryFragmentToPreviewFragment(image.imageUrl)
             it.findNavController().navigate(direction, extras)
