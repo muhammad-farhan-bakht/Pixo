@@ -20,6 +20,7 @@ import com.farhan.pixo.ui.gallery.viewmodel.GalleryViewModel
 import com.farhan.pixo.utils.gone
 import com.farhan.pixo.utils.toast
 import com.farhan.pixo.utils.viewBinding
+import com.farhan.pixo.utils.waitForTransition
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -27,7 +28,9 @@ import kotlinx.coroutines.launch
 class GalleryFragment : Fragment(R.layout.gallery_fragment), IView<GalleryState> {
 
     private val viewModel by viewModels<GalleryViewModel>()
+
     private val binding by viewBinding(GalleryFragmentBinding::bind)
+    private var fragmentStateRefresh = true
     private val galleryAdapter by lazy {
         GalleryAdapter()
     }
@@ -36,20 +39,21 @@ class GalleryFragment : Fragment(R.layout.gallery_fragment), IView<GalleryState>
         private const val DEFAULT_QUERY = "nature"
     }
 
-
     override fun onViewCreated(view: View, bundle: Bundle?) {
         super.onViewCreated(view, bundle)
         setHasOptionsMenu(true)
         initUi()
         subscribeObservers()
-        sendAction(GalleryActions.GetImages(DEFAULT_QUERY))
+        if (fragmentStateRefresh)
+            sendAction(GalleryActions.GetImages(DEFAULT_QUERY))
+        fragmentStateRefresh = false
     }
 
     private fun initUi() {
         binding.rvGallery.apply {
             setHasFixedSize(true)
             adapter = galleryAdapter
-            binding.rvGallery.layoutManager = GridLayoutManager(requireContext(),2,GridLayoutManager.VERTICAL,false)
+            binding.rvGallery.layoutManager = GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
         }
     }
 
@@ -59,28 +63,29 @@ class GalleryFragment : Fragment(R.layout.gallery_fragment), IView<GalleryState>
             render(it)
         })
 
-        viewModel.images.observe(viewLifecycleOwner){
+        viewModel.images.observe(viewLifecycleOwner) {
             galleryAdapter.submitData(viewLifecycleOwner.lifecycle, it)
+            waitForTransition(binding.rvGallery)
             binding.galleryProgressBar.gone()
         }
     }
 
-    private fun sendAction(galleryActions: GalleryActions){
+    private fun sendAction(galleryActions: GalleryActions) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.actions.send(galleryActions)
         }
     }
 
     override fun render(state: GalleryState) {
-        when(state){
+        when (state) {
             is GalleryState.GetImages -> {
                 binding.galleryProgressBar.isVisible = state.isLoading
                 if (state.errorMessage != null) {
-                   requireContext().toast("Error: ${state.errorMessage}")
+                    requireContext().toast("Error: ${state.errorMessage}")
                 }
             }
-            GalleryState.NoInternet -> {}
-            is GalleryState.OnClickImage -> {}
+            is GalleryState.OnClickImage -> {
+            }
         }
     }
 
@@ -101,10 +106,10 @@ class GalleryFragment : Fragment(R.layout.gallery_fragment), IView<GalleryState>
                 }
                 return true
             }
+
             override fun onQueryTextChange(newText: String?): Boolean {
                 return true
             }
         })
     }
-
 }

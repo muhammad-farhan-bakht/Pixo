@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.farhan.pixo.arch.mvi.IModel
+import com.farhan.pixo.ui.gallery.state.GalleryState
 import com.farhan.pixo.ui.preview.action.PreviewActions
 import com.farhan.pixo.ui.preview.state.PreviewState
 import kotlinx.coroutines.channels.Channel
@@ -16,7 +17,7 @@ class PreviewViewModel : ViewModel(), IModel<PreviewState, PreviewActions> {
 
     override val actions: Channel<PreviewActions> = Channel(Channel.UNLIMITED)
 
-    private val _state = MutableLiveData<PreviewState>().apply { value = PreviewState() }
+    private val _state = MutableLiveData<PreviewState>()
     override val state: LiveData<PreviewState>
         get() = _state
 
@@ -28,12 +29,16 @@ class PreviewViewModel : ViewModel(), IModel<PreviewState, PreviewActions> {
         viewModelScope.launch {
             actions.consumeAsFlow().collect {
                 when(it){
-                    PreviewActions.LoadImage -> TODO()
-                    PreviewActions.NoInternet -> TODO()
-                    is PreviewActions.OnClickShare -> TODO()
+                    is PreviewActions.LoadImage -> {
+                        updateState(PreviewState.LoadImage(it.imageUrl))
+                    }
                 }
             }
         }
+    }
+
+    private fun updateState(action: PreviewState) {
+        _state.postValue(action)
     }
 
 }

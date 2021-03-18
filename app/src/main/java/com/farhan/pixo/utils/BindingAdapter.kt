@@ -1,4 +1,4 @@
-package com.farhan.pixo.ui.gallery.adapter
+package com.farhan.pixo.utils
 
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter

@@ -39,23 +39,20 @@ class GalleryViewModel @Inject constructor(private val galleryRepository: Galler
             actions.consumeAsFlow().collect { actions ->
                 when(actions){
                     is GalleryActions.GetImages -> {
-                        updateState(GalleryState.GetImages(isLoading = true))
-                        delay(1000)
-                        currentQuery.value = actions.query
+                        loadImages(actions.query)
+
                     }
-                    GalleryActions.NoInternet -> updateState(GalleryState.NoInternet)
                     is GalleryActions.OnClickImage -> updateState (GalleryState.OnClickImage(imageUrl = actions.imageUrl))
                 }
             }
         }
     }
 
-    private suspend fun loadImages() {
+    private suspend fun loadImages(query:String) {
         try {
             updateState(GalleryState.GetImages(isLoading = true))
-            val image = galleryRepository.getImages()
-            Timber.e("image size ${image.imageList.size}")
-            updateState(GalleryState.GetImages(isLoading = false,imagesList = image.imageList))
+            delay(1000)
+            currentQuery.value = query
         } catch (e:Exception){
             e.printStackTrace()
             updateState(GalleryState.GetImages(isLoading = false, errorMessage = e.message))
@@ -65,5 +62,4 @@ class GalleryViewModel @Inject constructor(private val galleryRepository: Galler
     private fun updateState(action: GalleryState) {
         _state.postValue(action)
     }
-
 }

@@ -18,5 +18,9 @@
         android:id="@+id/previewFragment"
         android:name="com.farhan.pixo.ui.preview.PreviewFragment"
         android:label="preview_fragment"
-        tools:layout="@layout/preview_fragment" />
+        tools:layout="@layout/preview_fragment" >
+        <argument
+            android:name="extra.image.url"
+            app:argType="string" />
+    </fragment>
 </navigation>

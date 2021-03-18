@@ -2,12 +2,15 @@ package com.farhan.pixo.ui.gallery.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewbinding.ViewBinding
 import com.farhan.pixo.databinding.GalleryListViewBinding
 import com.farhan.pixo.model.Images
+import com.farhan.pixo.ui.gallery.GalleryFragmentDirections
+import com.farhan.pixo.utils.toTransitionGroup
 
 class GalleryAdapter : PagingDataAdapter<Images, ItemViewHolder>(GalleryAdapter) {
     companion object : DiffUtil.ItemCallback<Images>() {
@@ -27,13 +30,23 @@ class GalleryAdapter : PagingDataAdapter<Images, ItemViewHolder>(GalleryAdapter)
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        val binding = holder.binding as GalleryListViewBinding
         val currentImage = getItem(position)
-        binding.run {
-            image = currentImage
-            executePendingBindings()
+        currentImage?.let {
+            holder.bind(it)
         }
     }
 }
 
-class ItemViewHolder(val binding: ViewBinding) : RecyclerView.ViewHolder(binding.root)
+class ItemViewHolder(private val binding: GalleryListViewBinding) : RecyclerView.ViewHolder(binding.root) {
+    fun bind(image: Images) {
+        binding.image = image
+        binding.executePendingBindings()
+        binding.root.setOnClickListener {
+            val extras = FragmentNavigatorExtras(
+                    binding.imgGalleryImage.toTransitionGroup()
+            )
+            val direction = GalleryFragmentDirections.actionGalleryFragmentToPreviewFragment(image.imageUrl)
+            it.findNavController().navigate(direction, extras)
+        }
+    }
+}

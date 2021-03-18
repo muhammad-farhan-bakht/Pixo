@@ -10,5 +10,4 @@ sealed class GalleryState : IState {
         val errorMessage: String? = null
     ) : GalleryState()
     data class OnClickImage(val imageUrl:String): GalleryState()
-    object NoInternet: GalleryState()
 }
