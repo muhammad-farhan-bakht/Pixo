@@ -9,7 +9,7 @@
     </data>
 
     <com.google.android.material.card.MaterialCardView
-        android:layout_margin="8dp"
+        android:layout_margin="4dp"
         android:layout_width="match_parent"
         android:clickable="true"
         android:focusable="true"
