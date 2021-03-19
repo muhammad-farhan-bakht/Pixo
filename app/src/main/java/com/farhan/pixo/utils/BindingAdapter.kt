@@ -2,11 +2,14 @@ package com.farhan.pixo.utils
 
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
-import coil.load
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 
 @BindingAdapter("setImageUrl")
 fun ImageView.setImageUrl(imageUrl: String) {
-    load(imageUrl) {
-        crossfade(true)
-    }
+    transitionName = imageUrl
+    Glide.with(this)
+        .load(imageUrl)
+        .transition(withCrossFade())
+        .into(this)
 }

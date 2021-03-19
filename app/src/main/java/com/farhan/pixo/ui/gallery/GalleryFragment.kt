@@ -1,15 +1,16 @@
 package com.farhan.pixo.ui.gallery
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.View
+import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.navigation.NavDirections
+import androidx.navigation.fragment.FragmentNavigator
+import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.navigation.fragment.findNavController
 import com.farhan.pixo.R
 import com.farhan.pixo.arch.mvi.IView
 import com.farhan.pixo.databinding.GalleryFragmentBinding
@@ -19,7 +20,6 @@ import com.farhan.pixo.ui.gallery.state.GalleryState
 import com.farhan.pixo.ui.gallery.viewmodel.GalleryViewModel
 import com.farhan.pixo.utils.gone
 import com.farhan.pixo.utils.toast
-import com.farhan.pixo.utils.viewBinding
 import com.farhan.pixo.utils.waitForTransition
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -28,32 +28,46 @@ import kotlinx.coroutines.launch
 class GalleryFragment : Fragment(R.layout.gallery_fragment), IView<GalleryState> {
 
     private val viewModel by viewModels<GalleryViewModel>()
-
-    private val binding by viewBinding(GalleryFragmentBinding::bind)
+    private var _binding: GalleryFragmentBinding? = null
+    private val binding get() = _binding!!
     private var fragmentStateRefresh = true
     private val galleryAdapter by lazy {
-        GalleryAdapter()
+        GalleryAdapter { view, imageUrl ->
+            navigate(view, imageUrl)
+        }
     }
 
     companion object {
         private const val DEFAULT_QUERY = "nature"
     }
 
-    override fun onViewCreated(view: View, bundle: Bundle?) {
-        super.onViewCreated(view, bundle)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = GalleryFragmentBinding.inflate(inflater, container, false)
+
         setHasOptionsMenu(true)
         initUi()
         subscribeObservers()
         if (fragmentStateRefresh)
             sendAction(GalleryActions.GetImages(DEFAULT_QUERY))
         fragmentStateRefresh = false
+
+        return binding.root
     }
 
     private fun initUi() {
         binding.rvGallery.apply {
             setHasFixedSize(true)
             adapter = galleryAdapter
-            binding.rvGallery.layoutManager = GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
+
+            postponeEnterTransition()
+            viewTreeObserver.addOnPreDrawListener {
+                startPostponedEnterTransition()
+                true
+            }
         }
     }
 
@@ -111,5 +125,24 @@ class GalleryFragment : Fragment(R.layout.gallery_fragment), IView<GalleryState>
                 return true
             }
         })
+    }
+
+    private fun navigate(view: View, imageUrl: String) {
+        val extras = FragmentNavigatorExtras(
+            view to imageUrl
+        )
+        val direction = GalleryFragmentDirections.actionGalleryFragmentToPreviewFragment(imageUrl)
+        navigateWith(direction, extras)
+    }
+
+    private fun navigateWith(destination: NavDirections, extraInfo: FragmentNavigator.Extras) =
+        with(findNavController()) {
+            currentDestination?.getAction(destination.actionId)
+                ?.let { navigate(destination, extraInfo) }
+        }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

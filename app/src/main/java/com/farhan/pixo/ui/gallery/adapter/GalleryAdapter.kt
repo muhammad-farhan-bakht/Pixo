@@ -1,18 +1,15 @@
 package com.farhan.pixo.ui.gallery.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.farhan.pixo.databinding.GalleryListViewBinding
 import com.farhan.pixo.model.Images
-import com.farhan.pixo.ui.gallery.GalleryFragmentDirections
-import com.farhan.pixo.utils.toTransitionGroup
 
-class GalleryAdapter : PagingDataAdapter<Images, ItemViewHolder>(GalleryAdapter) {
+class GalleryAdapter(private val onClickItem: (view: View, imageUrl:String) -> Unit) : PagingDataAdapter<Images, ItemViewHolder>(GalleryAdapter) {
     companion object : DiffUtil.ItemCallback<Images>() {
         override fun areItemsTheSame(oldItem: Images, newItem: Images): Boolean {
             return oldItem.id == newItem.id
@@ -32,21 +29,17 @@ class GalleryAdapter : PagingDataAdapter<Images, ItemViewHolder>(GalleryAdapter)
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val currentImage = getItem(position)
         currentImage?.let {
-            holder.bind(it)
+            holder.bind(it,onClickItem)
         }
     }
 }
 
-class ItemViewHolder(private val binding: GalleryListViewBinding) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(image: Images) {
+class ItemViewHolder(private val binding: GalleryListViewBinding) : RecyclerView.ViewHolder(binding.root){
+    fun bind(image: Images, onClickItem: (view: View, imageUrl:String) -> Unit) {
         binding.image = image
         binding.executePendingBindings()
         binding.root.setOnClickListener {
-            val extras = FragmentNavigatorExtras(
-                   binding.imgGalleryImage.toTransitionGroup()
-            )
-            val direction = GalleryFragmentDirections.actionGalleryFragmentToPreviewFragment(image.imageUrl)
-            it.findNavController().navigate(direction, extras)
+            onClickItem(binding.imgGalleryImage,image.imageUrl)
         }
     }
 }

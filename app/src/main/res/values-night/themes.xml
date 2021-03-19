@@ -14,10 +14,5 @@
         <!-- Customize your theme here. -->
 
         <item name="android:windowActivityTransitions">true</item>
-        <!-- specify shared element transitions -->
-        <item name="android:windowSharedElementEnterTransition">
-            @transition/change_bounds</item>
-        <item name="android:windowSharedElementExitTransition">
-            @transition/change_bounds</item>
     </style>
 </resources>
