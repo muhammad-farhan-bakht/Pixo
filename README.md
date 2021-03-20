@@ -32,7 +32,6 @@ Also fetching data from the network via repository pattern.
 - [Retrofit2 & OkHttp3](https://github.com/square/retrofit) - construct the REST APIs and paging network data.
 - [Gson](https://github.com/google/gson) - A JSON library for Kotlin and Java.
 - [Glide](https://github.com/bumptech/glide) - loading images.
-- [TransformationLayout](https://github.com/skydoves/transformationlayout) - implementing transformation motion animations.
 - [Timber](https://github.com/JakeWharton/timber) - logging.
 - [Material-Components](https://github.com/material-components/material-components-android) - Material design components like ripple animation, cardView.
 
