@@ -8,29 +8,14 @@
             type="com.farhan.pixo.model.Images" />
     </data>
 
-    <com.google.android.material.card.MaterialCardView
-        android:layout_margin="4dp"
+    <ImageView
+        android:id="@+id/img_gallery_image"
         android:layout_width="match_parent"
-        android:clickable="true"
-        android:focusable="true"
-        app:cardCornerRadius="10dp"
-        android:layout_height="200dp">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <ImageView
-                android:id="@+id/img_gallery_image"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:adjustViewBounds="true"
-                android:scaleType="centerCrop"
-                android:contentDescription="@string/image"
-                app:setImageUrl="@{image.imageUrl}"/>
-
-        </RelativeLayout>
-
-    </com.google.android.material.card.MaterialCardView>
+        android:layout_height="200dp"
+        android:layout_margin="4dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/image"
+        app:setImageUrl="@{image.imageUrl}"/>
 
 </layout>

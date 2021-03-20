@@ -18,9 +18,7 @@ import com.farhan.pixo.ui.gallery.action.GalleryActions
 import com.farhan.pixo.ui.gallery.adapter.GalleryAdapter
 import com.farhan.pixo.ui.gallery.state.GalleryState
 import com.farhan.pixo.ui.gallery.viewmodel.GalleryViewModel
-import com.farhan.pixo.utils.gone
-import com.farhan.pixo.utils.toast
-import com.farhan.pixo.utils.waitForTransition
+import com.farhan.pixo.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -30,10 +28,10 @@ class GalleryFragment : Fragment(R.layout.gallery_fragment), IView<GalleryState>
     private val viewModel by viewModels<GalleryViewModel>()
     private var _binding: GalleryFragmentBinding? = null
     private val binding get() = _binding!!
-    private var fragmentStateRefresh = true
+
     private val galleryAdapter by lazy {
         GalleryAdapter { view, imageUrl ->
-            navigate(view, imageUrl)
+            navigateWith(view, imageUrl)
         }
     }
 
@@ -42,20 +40,27 @@ class GalleryFragment : Fragment(R.layout.gallery_fragment), IView<GalleryState>
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View {
         _binding = GalleryFragmentBinding.inflate(inflater, container, false)
 
         setHasOptionsMenu(true)
         initUi()
         subscribeObservers()
-        if (fragmentStateRefresh)
+        if (viewModel.fragmentState())
             sendAction(GalleryActions.GetImages(DEFAULT_QUERY))
-        fragmentStateRefresh = false
+        viewModel.fragmentState(false)
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setExitToFullScreenTransition()
+        setReturnFromFullScreenTransition()
     }
 
     private fun initUi() {
@@ -78,9 +83,9 @@ class GalleryFragment : Fragment(R.layout.gallery_fragment), IView<GalleryState>
         })
 
         viewModel.images.observe(viewLifecycleOwner) {
+            binding.galleryProgressBar.gone()
             galleryAdapter.submitData(viewLifecycleOwner.lifecycle, it)
             waitForTransition(binding.rvGallery)
-            binding.galleryProgressBar.gone()
         }
     }
 
@@ -98,8 +103,6 @@ class GalleryFragment : Fragment(R.layout.gallery_fragment), IView<GalleryState>
                     requireContext().toast("Error: ${state.errorMessage}")
                 }
             }
-            is GalleryState.OnClickImage -> {
-            }
         }
     }
 
@@ -107,9 +110,9 @@ class GalleryFragment : Fragment(R.layout.gallery_fragment), IView<GalleryState>
         super.onCreateOptionsMenu(menu, inflater)
 
         inflater.inflate(R.menu.menu_gallery, menu)
-
         val searchItem = menu.findItem(R.id.action_search)
         val searchView = searchItem.actionView as SearchView
+        searchView.maxWidth = Integer.MAX_VALUE
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -127,15 +130,15 @@ class GalleryFragment : Fragment(R.layout.gallery_fragment), IView<GalleryState>
         })
     }
 
-    private fun navigate(view: View, imageUrl: String) {
+    private fun navigateWith(view: View, imageUrl: String) {
         val extras = FragmentNavigatorExtras(
-            view to imageUrl
+                view to imageUrl
         )
         val direction = GalleryFragmentDirections.actionGalleryFragmentToPreviewFragment(imageUrl)
-        navigateWith(direction, extras)
+        navigate(direction, extras)
     }
 
-    private fun navigateWith(destination: NavDirections, extraInfo: FragmentNavigator.Extras) =
+    private fun navigate(destination: NavDirections, extraInfo: FragmentNavigator.Extras) =
         with(findNavController()) {
             currentDestination?.getAction(destination.actionId)
                 ?.let { navigate(destination, extraInfo) }

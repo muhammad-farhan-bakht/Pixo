@@ -9,5 +9,4 @@ sealed class GalleryState : IState {
         val isLoading: Boolean = false,
         val errorMessage: String? = null
     ) : GalleryState()
-    data class OnClickImage(val imageUrl:String): GalleryState()
 }

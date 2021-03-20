@@ -12,7 +12,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,6 +24,12 @@ class GalleryViewModel @Inject constructor(private val galleryRepository: Galler
         get() = _state
 
     private val currentQuery = MutableLiveData<String>()
+    private var fragmentState = true
+
+    fun fragmentState() = fragmentState
+    fun fragmentState(newState:Boolean){
+        fragmentState = newState
+    }
 
     val images = currentQuery.switchMap { queryString ->
         galleryRepository.getImages2(queryString).cachedIn(viewModelScope)
@@ -40,9 +45,7 @@ class GalleryViewModel @Inject constructor(private val galleryRepository: Galler
                 when(actions){
                     is GalleryActions.GetImages -> {
                         loadImages(actions.query)
-
                     }
-                    is GalleryActions.OnClickImage -> updateState (GalleryState.OnClickImage(imageUrl = actions.imageUrl))
                 }
             }
         }
