@@ -15,13 +15,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class GalleryRepository @Inject constructor(private val pixabayApi: PixabayApi) {
-    suspend fun getImages(): Image {
-        return withContext(Dispatchers.IO) {
-            pixabayApi.getImages()
-        }
-    }
-
-    fun getImages2(query: String) =
+    fun getImages(query: String) =
             Pager(
                     config = PagingConfig(
                             pageSize = 20,
@@ -30,9 +24,4 @@ class GalleryRepository @Inject constructor(private val pixabayApi: PixabayApi) 
                     ),
                     pagingSourceFactory = { PixabayPagingSource(pixabayApi, query) }
             ).liveData
-
-    fun getImages3(query: String): Flow<PagingData<Images>> =
-            Pager(config = PagingConfig(pageSize = 20, prefetchDistance = 2),
-                    pagingSourceFactory = { PixabayPagingSource(pixabayApi, query) }
-            ).flow
 }

@@ -32,7 +32,7 @@ class GalleryViewModel @Inject constructor(private val galleryRepository: Galler
     }
 
     val images = currentQuery.switchMap { queryString ->
-        galleryRepository.getImages2(queryString).cachedIn(viewModelScope)
+        galleryRepository.getImages(queryString).cachedIn(viewModelScope)
     }
 
     init {
